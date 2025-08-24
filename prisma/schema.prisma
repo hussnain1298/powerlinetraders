@@ -183,6 +183,7 @@ model PurchaseOrderItem {
 
 model Customer {
   id        String   @id @default(uuid())
+  code      String   @unique // <-- Add this line
   name      String
   email     String?
   phone     String?

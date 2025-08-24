@@ -10,21 +10,6 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const customers = await prisma.customer.findMany({
-      orderBy: { name: "asc" },
-    })
-import { type NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth-config"
-import { prisma } from "@/lib/prisma"
-
-export async function GET() {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user || !["ADMIN", "MANAGER"].includes(session.user.role)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const customerCount = await prisma.customer.count()
 
     if (customerCount === 0) {
@@ -85,51 +70,6 @@ export async function GET() {
     const customers = await prisma.customer.findMany({
       orderBy: { name: "asc" },
     })
-
-    return NextResponse.json(customers)
-  } catch (error) {
-    console.error("Error fetching customers:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user || !["ADMIN", "MANAGER"].includes(session.user.role)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const data = await request.json()
-    const { code, name, email, phone, address, taxId, isActive } = data
-
-    // Check if customer code already exists
-    const existingCustomer = await prisma.customer.findUnique({
-      where: { code },
-    })
-
-    if (existingCustomer) {
-      return NextResponse.json({ error: "Customer code already exists" }, { status: 400 })
-    }
-
-    const customer = await prisma.customer.create({
-      data: {
-        code,
-        name,
-        email: email || null,
-        phone: phone || null,
-        address: address || null,
-        taxId: taxId || null,
-        isActive,
-      },
-    })
-
-    return NextResponse.json(customer, { status: 201 })
-  } catch (error) {
-    console.error("Error creating customer:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
-}
 
     return NextResponse.json(customers)
   } catch (error) {

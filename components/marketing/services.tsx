@@ -29,7 +29,7 @@ export function Services() {
     <div className="py-24 bg-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Why Choose PowerParts Pro</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Why Choose Powerline Traders</h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
             We're committed to providing exceptional service and support for all your generator parts needs.
           </p>

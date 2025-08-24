@@ -47,7 +47,7 @@ export default function AboutPage() {
               <div className="relative">
                 <Image
                   src="/industrial-warehouse-with-generator-parts-and-equi.png"
-                  alt="PowerParts Pro warehouse facility"
+                  alt="Powerline Traders warehouse facility"
                   width={600}
                   height={400}
                   className="rounded-lg shadow-lg"

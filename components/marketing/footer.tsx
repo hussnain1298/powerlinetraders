@@ -9,7 +9,7 @@ export function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <Zap className="h-8 w-8" />
-              <span className="text-xl font-bold">PowerParts Pro</span>
+              <span className="text-xl font-bold">Powerline Traders</span>
             </Link>
             <p className="text-primary-foreground/80 max-w-md">
               Your trusted partner for high-quality generator parts and components. Serving businesses nationwide with
