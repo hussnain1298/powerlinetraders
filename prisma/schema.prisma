@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum Unit {
+  PCS
+  SET
+  BOX
+  LITER
+  KG
+  HOUR
+}
+
+enum MovementType {
+  PURCHASE
+  SALE
+  ADJUSTMENT
+  TRANSFER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  POSTED
+  PAID
+  VOID
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(STAFF)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  movements    StockMovement[]  @relation("UserMovements")
+  invoices     SalesInvoice[]   @relation("UserInvoices")
+  purchaseOrders PurchaseOrder[] @relation("UserPurchaseOrders")
+  auditLogs    AuditLog[]       @relation("UserAuditLogs")
+
+  @@map("users")
+}
+
+model Warehouse {
+  id       String  @id @default(uuid())
+  code     String  @unique
+  name     String
+  address  String?
+  isActive Boolean @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  stocks           WarehouseStock[]
+  fromMovements    StockMovement[]  @relation("FromWarehouse")
+  toMovements      StockMovement[]  @relation("ToWarehouse")
+  purchaseOrders   PurchaseOrder[]
+  salesInvoices    SalesInvoice[]
+
+  @@map("warehouses")
+}
+
+model Product {
+  id          String  @id @default(uuid())
+  sku         String  @unique
+  name        String
+  description String?
+  unit        Unit    @default(PCS)
+  minStock    Decimal @default(0) @map("min_stock")
+  taxRate     Decimal @default(0) @map("tax_rate")
+  isActive    Boolean @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  stocks            WarehouseStock[]
+  movements         StockMovement[]
+  purchaseItems     PurchaseOrderItem[]
+  salesItems        SalesInvoiceItem[]
+
+  @@map("products")
+}
+
+model WarehouseStock {
+  productId   String  @map("product_id")
+  warehouseId String  @map("warehouse_id")
+  qty         Decimal @default(0)
+  avgCost     Decimal @default(0) @map("avg_cost")
+
+  // Relations
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+
+  @@id([productId, warehouseId])
+  @@index([warehouseId])
+  @@map("warehouse_stock")
+}
+
+model StockMovement {
+  id              String       @id @default(uuid())
+  movementType    MovementType @map("movement_type")
+  productId       String       @map("product_id")
+  fromWarehouseId String?      @map("from_warehouse_id")
+  toWarehouseId   String?      @map("to_warehouse_id")
+  qty             Decimal
+  unitCost        Decimal      @default(0) @map("unit_cost")
+  reference       String?
+  createdById     String?      @map("created_by")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  // Relations
+  product       Product    @relation(fields: [productId], references: [id])
+  fromWarehouse Warehouse? @relation("FromWarehouse", fields: [fromWarehouseId], references: [id])
+  toWarehouse   Warehouse? @relation("ToWarehouse", fields: [toWarehouseId], references: [id])
+  createdBy     User?      @relation("UserMovements", fields: [createdById], references: [id])
+
+  @@index([productId, createdAt])
+  @@map("stock_movements")
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  purchaseOrders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+model PurchaseOrder {
+  id          String   @id @default(uuid())
+  poNumber    String   @unique @map("po_number")
+  supplierId  String   @map("supplier_id")
+  warehouseId String   @map("warehouse_id")
+  status      String   @default("OPEN")
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdById String?  @map("created_by")
+
+  // Relations
+  supplier  Supplier  @relation(fields: [supplierId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  createdBy User?     @relation("UserPurchaseOrders", fields: [createdById], references: [id])
+  items     PurchaseOrderItem[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id              String  @id @default(uuid())
+  purchaseOrderId String  @map("purchase_order_id")
+  productId       String  @map("product_id")
+  qty             Decimal
+  unitCost        Decimal @map("unit_cost")
+  taxRate         Decimal @default(0) @map("tax_rate")
+
+  // Relations
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  product       Product       @relation(fields: [productId], references: [id])
+
+  @@map("purchase_order_items")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  invoices SalesInvoice[]
+
+  @@map("customers")
+}
+
+model SalesInvoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String        @unique @map("invoice_number")
+  customerId    String?       @map("customer_id")
+  status        InvoiceStatus @default(DRAFT)
+  issueDate     DateTime      @default(now()) @map("issue_date")
+  dueDate       DateTime?     @map("due_date")
+  warehouseId   String?       @map("warehouse_id")
+  subTotal      Decimal       @default(0) @map("sub_total")
+  taxTotal      Decimal       @default(0) @map("tax_total")
+  grandTotal    Decimal       @default(0) @map("grand_total")
+  createdById   String?       @map("created_by")
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  customer  Customer?  @relation(fields: [customerId], references: [id])
+  warehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+  createdBy User?      @relation("UserInvoices", fields: [createdById], references: [id])
+  items     SalesInvoiceItem[]
+  payments  InvoicePayment[]
+
+  @@index([issueDate])
+  @@map("sales_invoices")
+}
+
+model SalesInvoiceItem {
+  id             String  @id @default(uuid())
+  salesInvoiceId String  @map("sales_invoice_id")
+  productId      String  @map("product_id")
+  qty            Decimal
+  unitPrice      Decimal @map("unit_price")
+  taxRate        Decimal @default(0) @map("tax_rate")
+  lineTotal      Decimal @map("line_total")
+
+  // Relations
+  salesInvoice SalesInvoice @relation(fields: [salesInvoiceId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id])
+
+  @@map("sales_invoice_items")
+}
+
+model InvoicePayment {
+  id             String   @id @default(uuid())
+  salesInvoiceId String   @map("sales_invoice_id")
+  amount         Decimal
+  method         String
+  paidAt         DateTime @default(now()) @map("paid_at")
+  reference      String?
+
+  // Relations
+  salesInvoice SalesInvoice @relation(fields: [salesInvoiceId], references: [id], onDelete: Cascade)
+
+  @@map("invoice_payments")
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  subject   String?
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("inquiries")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String?  @map("actor_id")
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  meta      Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  actor User? @relation("UserAuditLogs", fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}
