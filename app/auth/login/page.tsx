@@ -2,9 +2,8 @@
 
 import type React from "react"
 import Link from "next/link"
-
 import { useState } from "react"
-import { signIn, getSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,11 +34,9 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Invalid email or password")
       } else {
-        // Get the session to check user role
-        const session = await getSession()
-        if (session?.user) {
-          router.push("/admin/dashboard")
-        }
+        router.push("/admin/dashboard")
+        // Optionally, force reload:
+        // window.location.reload()
       }
     } catch (error) {
       setError("An error occurred. Please try again.")
@@ -101,8 +98,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-        
-
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
@@ -115,4 +110,3 @@ export default function LoginPage() {
       </Card>
     </div>
   )
-}
