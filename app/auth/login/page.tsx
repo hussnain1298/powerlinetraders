@@ -101,10 +101,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-600">
-            <p>Demo credentials:</p>
-            <p className="font-mono">admin@company.com / admin123</p>
-          </div>
+        
 
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
