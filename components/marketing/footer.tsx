@@ -72,7 +72,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-primary-foreground/20">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-primary-foreground/80">© 2024 PowerParts Pro. All rights reserved.</p>
+            <p className="text-sm text-primary-foreground/80">© 2025 Powerline Traders Pro. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
                 Privacy Policy

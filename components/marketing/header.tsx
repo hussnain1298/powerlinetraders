@@ -63,7 +63,7 @@ export function Header() {
             <div className="flex items-center justify-between">
               <Link href="/" className="-m-1.5 p-1.5 flex items-center space-x-2">
                 <Zap className="h-8 w-8 text-accent" />
-                <span className="text-xl font-bold text-foreground">PowerParts Pro</span>
+                <span className="text-xl font-bold text-foreground">Powerline Traders</span>
               </Link>
               <button
                 type="button"

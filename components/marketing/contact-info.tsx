@@ -35,7 +35,7 @@ export function ContactInfo() {
             <Mail className="h-5 w-5 text-accent mt-0.5" />
             <div>
               <p className="font-medium text-foreground">Email</p>
-              <p className="text-muted-foreground">info@powerpartspro.com</p>
+              <p className="text-muted-foreground">info@powerlinetraders.com</p>
             </div>
           </div>
 

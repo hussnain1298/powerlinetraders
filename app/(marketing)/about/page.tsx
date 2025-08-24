@@ -15,7 +15,7 @@ export default function AboutPage() {
         <section className="py-20 bg-gradient-to-br from-slate-50 to-slate-100">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">About PowerParts Pro</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">About Powerline Traders </h1>
               <p className="text-xl text-slate-600 mb-8">
                 Your trusted partner for generator parts and services since 1995. We've been keeping businesses powered
                 through reliable parts supply and expert maintenance services.
@@ -31,7 +31,7 @@ export default function AboutPage() {
               <div>
                 <h2 className="text-3xl font-bold text-slate-900 mb-6">Our Story</h2>
                 <p className="text-lg text-slate-600 mb-6">
-                  Founded in 1995 by electrical engineer Robert Johnson, PowerParts Pro began as a small parts supplier
+                  Founded in 2005 by mechanical engineer Tallat Mahmood, Powerline Traders began as a small parts supplier
                   serving local businesses. What started in a 2,000 sq ft warehouse has grown into a comprehensive
                   generator services company with over 50,000 parts in inventory.
                 </p>
@@ -117,7 +117,7 @@ export default function AboutPage() {
                   <h3 className="text-xl font-semibold text-slate-900 mb-2">Robert Johnson</h3>
                   <p className="text-orange-600 font-medium mb-3">CEO & Founder</p>
                   <p className="text-slate-600">
-                    Electrical engineer with 35+ years in power systems. Founded PowerParts Pro with a vision to provide
+                    Mechnical engineer with 25+ years in power systems. Founded Powerline Traders with a vision to provide
                     reliable generator solutions.
                   </p>
                 </CardContent>
