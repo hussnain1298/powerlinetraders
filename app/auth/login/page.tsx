@@ -31,12 +31,11 @@ export default function LoginPage() {
         redirect: false,
       })
 
-      if (result?.error) {
+     if (result?.error) {
         setError("Invalid email or password")
       } else {
         router.push("/admin/dashboard")
-        // Optionally, force reload:
-        // window.location.reload()
+        window.location.reload() // <-- Add this line
       }
     } catch (error) {
       setError("An error occurred. Please try again.")
